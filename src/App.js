@@ -1,32 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import axios from "axios";
+// import axios from "axios";
 import styled from "styled-components";
-import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://localhost:8001";
+import { socket } from "./service/socket";
+import Join from "./components/Join";
 
 const Title = styled.div``;
 
 function App() {
-  // const [game, setGame] = useState(null);
+  const [gameId, setGameId] = useState(null);
+  const [gameData, setGameData] = useState(null);
+
   useEffect(() => {
-    const io = socketIOClient(ENDPOINT);
-  });
+    socket.on("roomJoined", (data) => {
+      setGameData(data);
+      console.log("room joined", data);
+    });
+    socket.on("roomNotFound", () => {
+      console.log("room not found");
+    });
+  }, []);
+
   const getGame = () => {
-    axios
-      .get("/api/game/3DTU")
-      .then((data) => {
-        console.log(data.data[0]);
-      })
-      .catch((e) => {
-        console.log("Not found");
-      });
+    console.log("searchGame sent");
+    socket.emit("searchGame", gameId);
+  };
+  const searchRoom = (code) => {
+    setGameId(code);
   };
 
   return (
     <div className="App">
       <Title>Trivier</Title>
-      <button onClick={getGame}>Push me</button>
+      <Join callback={searchRoom}></Join>
+      <button onClick={getGame}>Find room</button>
+      {/* {!gameData && gameData.players} */}
     </div>
   );
 }
