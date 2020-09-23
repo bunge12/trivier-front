@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const Field = styled.input``;
 
-export default function Join(props) {
+export default function Room(props) {
   const [room, setRoom] = useState("3DTU");
   const searchRoom = (event) => {
     setRoom(event.target.value);

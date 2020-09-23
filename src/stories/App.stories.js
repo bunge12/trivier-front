@@ -1,7 +1,10 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-// import { action } from "@storybook/addon-actions";
+import { action } from "@storybook/addon-actions";
 
-import Join from "../components/Join";
+import Room from "../components/Room";
+import Name from "../components/Name";
 
-storiesOf("App", module).add("Join Field", () => <Join />);
+storiesOf("App", module)
+  .add("Room Search Field", () => <Room callback={action()} />)
+  .add("Name Add Field", () => <Name callback={action()} />);
