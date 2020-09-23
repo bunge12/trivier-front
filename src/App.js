@@ -13,14 +13,27 @@ const WAITING = "WAITING"; // Waiting Room
 
 const Title = styled.div``;
 
+const generateId = (length) => {
+  var result = "";
+  var characters = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
+
 function App() {
   const [searchGameId, setSearchGameId] = useState(null);
   const [currentGameId, setCurrentGameId] = useState(null);
   const [name, setName] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [mode, setMode] = useState(WELCOME);
+  const [admin, setAdmin] = useState(false);
   const [gameData, setGameData] = useState(null);
 
   useEffect(() => {
+    setUserId(generateId(6));
     socket.on("roomFound", (roomId) => {
       setCurrentGameId(roomId);
       setMode(NAME);
@@ -29,10 +42,11 @@ function App() {
     socket.on("roomNotFound", () => {
       console.log("room not found");
     });
-    socket.on("waitingToStart", (data) => {
+    socket.on("waitingToStart", (data, admin) => {
       setGameData(data);
       setCurrentGameId(data[0].room);
       setMode(WAITING);
+      admin && setAdmin(true);
       console.log("created, waiting  to start", data);
     });
     // eslint-disable-next-line
@@ -42,10 +56,10 @@ function App() {
     socket.emit("searchGame", searchGameId);
   };
   const newGame = () => {
-    socket.emit("newGame", name);
+    socket.emit("newGame", name, userId);
   };
   const addToGame = () => {
-    socket.emit("addToGame", currentGameId, name);
+    socket.emit("addToGame", currentGameId, name, userId);
   };
   const searchRoom = (code) => {
     setSearchGameId(code);
@@ -59,7 +73,7 @@ function App() {
       <Title>Trivier</Title>
       {currentGameId && (
         <>
-          Room code {currentGameId}
+          Room code {currentGameId} | ({name})
           <br />
         </>
       )}
@@ -92,9 +106,10 @@ function App() {
         <>
           <br />
           Waiting room:
-          {gameData[0].players.map((each) => (
-            <ul>{each.name}</ul>
+          {gameData[0].players.map((each, index) => (
+            <ul key={index}>{each.name}</ul>
           ))}
+          {admin && <button>start</button>}
         </>
       )}
     </div>
