@@ -3,8 +3,9 @@ import "./App.css";
 // import axios from "axios";
 import styled from "styled-components";
 import { socket } from "./service/socket";
-import Room from "./components/Room";
-import Name from "./components/Name";
+import TextInput from "./components/TextInput";
+import Button from "./components/Button";
+
 const WELCOME = "WELCOME"; // Welcome Screen
 const NEW = "NEW"; // Create new Room
 const JOIN = "JOIN"; // Join Existing Room
@@ -47,7 +48,7 @@ function App() {
       setCurrentGameId(data[0].room);
       setMode(WAITING);
       admin && setAdmin(true);
-      console.log("created, waiting  to start", data);
+      console.log("created, waiting  to start");
     });
     // eslint-disable-next-line
   }, []);
@@ -56,6 +57,7 @@ function App() {
     socket.emit("searchGame", searchGameId);
   };
   const newGame = () => {
+    console.log("newGame");
     socket.emit("newGame", name, userId);
   };
   const addToGame = () => {
@@ -86,20 +88,29 @@ function App() {
       )}
       {mode === NEW && (
         <>
-          <Name callback={saveName}></Name>
-          <button onClick={newGame}>Create room</button>
+          <TextInput
+            placeholder="Enter Your Name"
+            callback={saveName}
+          ></TextInput>
+          <Button text="Create room" callback={newGame}></Button>
         </>
       )}
       {mode === JOIN && (
         <>
-          <Room callback={searchRoom}></Room>
-          <button onClick={getGame}>Find room</button>
+          <TextInput
+            placeholder="Enter Room Code"
+            callback={searchRoom}
+          ></TextInput>
+          <Button text="Find room" callback={getGame}></Button>
         </>
       )}
       {mode === NAME && (
         <>
-          <Name callback={saveName}></Name>
-          <button onClick={addToGame}>Join room</button>
+          <TextInput
+            placeholder="Enter Your Name"
+            callback={saveName}
+          ></TextInput>
+          <Button text="Join room" callback={addToGame}></Button>
         </>
       )}
       {mode === WAITING && (
