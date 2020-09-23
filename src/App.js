@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { socket } from "./service/socket";
 import TextInput from "./components/TextInput";
 import Button from "./components/Button";
+import WaitingRoom from "./components/WaitingRoom";
 
 const WELCOME = "WELCOME"; // Welcome Screen
 const NEW = "NEW"; // Create new Room
@@ -12,7 +13,9 @@ const JOIN = "JOIN"; // Join Existing Room
 const NAME = "NAME"; // Add name to existing room
 const WAITING = "WAITING"; // Waiting Room
 
-const Title = styled.div``;
+const Title = styled.div`
+  margin-bottom: 1vh;
+`;
 
 const generateId = (length) => {
   var result = "";
@@ -81,9 +84,9 @@ function App() {
       )}
       {mode === WELCOME && (
         <>
-          <button onClick={() => setMode(NEW)}>New Game</button>
+          <Button text="New Game" callback={() => setMode(NEW)}></Button>
           <br />
-          <button onClick={() => setMode(JOIN)}>Join Game</button>
+          <Button text="Join Game" callback={() => setMode(JOIN)}></Button>
         </>
       )}
       {mode === NEW && (
@@ -117,10 +120,13 @@ function App() {
         <>
           <br />
           Waiting room:
-          {gameData[0].players.map((each, index) => (
-            <ul key={index}>{each.name}</ul>
-          ))}
-          {admin && <button>start</button>}
+          <WaitingRoom players={gameData[0].players} />
+          {admin && gameData[0].players.length > 1 && (
+            <Button text="Start Game" callback={() => {}}></Button>
+          )}
+          {admin &&
+            gameData[0].players.length === 1 &&
+            "Waiting for other players to join..."}
         </>
       )}
     </div>
