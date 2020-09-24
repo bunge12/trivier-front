@@ -9,9 +9,9 @@ import GameInfo from "../components/GameInfo";
 import Question from "../components/Question";
 
 const players = [
-  { id: "YZI6TU", name: "Artur", score: 0 },
-  { id: "YZI6TU", name: "Artur2", score: 0 },
-  { id: "YZI6TU", name: "Artur3", score: 0 },
+  { id: "YZI6TU", name: "Artur", score: 8 },
+  { id: "KJBUYG", name: "Josh", score: 3 },
+  { id: "FDXDXG", name: "Sky", score: 9 },
 ];
 
 const question1 = {
@@ -20,7 +20,7 @@ const question1 = {
   difficulty: "easy",
   question: "On a dartboard, what number is directly opposite No. 1?",
   correct_answer: "19",
-  incorrect_answers: ["20", "12", "15"],
+  all_answers: ["19", "20", "12", "15"],
 };
 
 const question2 = {
@@ -30,7 +30,7 @@ const question2 = {
   question:
     "The music group Daft Punk got their name from a negative review they recieved.",
   correct_answer: "True",
-  incorrect_answers: ["False"],
+  all_answers: ["True", "False"],
 };
 
 const question3 = {
@@ -39,9 +39,10 @@ const question3 = {
   difficulty: "easy",
   question: "Which of the following presidents is not on Mount Rushmore?",
   correct_answer: "John F. Kennedy",
-  incorrect_answers: [
+  all_answers: [
     "Theodore Roosevelt",
     "Abraham Lincoln",
+    "John F. Kennedy",
     "Thomas Jefferson",
   ],
 };
