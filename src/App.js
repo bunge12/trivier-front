@@ -37,6 +37,7 @@ function App() {
   const [admin, setAdmin] = useState(false);
   const [gameData, setGameData] = useState(null);
 
+  // Socket.io listeners
   useEffect(() => {
     setUserId(generateId(6));
     socket.on("roomFound", (roomId) => {
