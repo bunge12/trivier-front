@@ -17,7 +17,8 @@ export default function Question(props) {
   const { question, correct_answer, all_answers, type } = props.data;
   const [showCorrect, setShowCorrect] = useState(null);
   const [disabled, setDisabled] = useState(false);
-  const [counter, setCounter] = useState(15);
+  const [counter, setCounter] = useState(5);
+
   let answers;
   if (type === "multiple") {
     answers = all_answers;
@@ -25,12 +26,17 @@ export default function Question(props) {
   if (type === "boolean") {
     answers = ["True", "False"];
   }
+
   useEffect(() => {
+    if (counter < 1) {
+      console.log("stop");
+      setShowCorrect(answers.indexOf(correct_answer));
+      setDisabled(true);
+    }
     const timer =
       counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
-    counter === 0 && console.log("next") && setDisabled(true);
     return () => clearInterval(timer);
-  }, [counter]);
+  }, [counter, answers, correct_answer]);
   const checkWinner = (answer) => {
     answer === correct_answer ? console.log("YES") : console.log("NO");
     setShowCorrect(answers.indexOf(correct_answer));

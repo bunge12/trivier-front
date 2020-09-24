@@ -7,6 +7,7 @@ import Button from "../components/Button";
 import WaitingRoom from "../components/WaitingRoom";
 import GameInfo from "../components/GameInfo";
 import Question from "../components/Question";
+import ScoreBoard from "../components/ScoreBoard";
 
 const players = [
   { id: "YZI6TU", name: "Artur", score: 8 },
@@ -61,6 +62,7 @@ storiesOf("App", module)
     <Button text="Join Room" callback={action("clicked")} />
   ))
   .add("Waiting Room", () => <WaitingRoom players={players} />)
+  .add("Scoreboard", () => <ScoreBoard players={players} />)
   .add("Info Bar", () => <GameInfo name={"Artur"} room={"ABCD"} />)
   .add("Multiple Choice Question", () => <Question data={question1} />)
   .add("Multiple Choice Text Question", () => <Question data={question3} />)

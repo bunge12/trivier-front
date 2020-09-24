@@ -27,6 +27,16 @@ const shuffle = (a) => {
   }
   return a;
 };
+
+const formatQuestion = (data, number) => {
+  const question = data[0].questions[0];
+  question.all_answers = shuffle(
+    data[0].questions[0].incorrect_answers.concat(
+      data[0].questions[0].correct_answer
+    )
+  );
+  return question;
+};
 const generateId = (length) => {
   var result = "";
   var characters = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789";
@@ -45,7 +55,7 @@ function App() {
   const [mode, setMode] = useState(WELCOME);
   const [admin, setAdmin] = useState(false);
   const [gameData, setGameData] = useState(null);
-  // const [questionNumber, setQuestionNumber] = useState(0);
+  const [questionNumber, setQuestionNumber] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState({});
 
   // Socket.io listeners
@@ -65,13 +75,13 @@ function App() {
       setMode(WAITING);
       admin && setAdmin(true);
       console.log("created, waiting  to start");
-      const firstQuestion = data[0].questions[0];
-      firstQuestion.all_answers = shuffle(
-        data[0].questions[0].incorrect_answers.concat(
-          data[0].questions[0].correct_answer
-        )
-      );
-      setCurrentQuestion(firstQuestion);
+      // const firstQuestion = data[0].questions[0];
+      // firstQuestion.all_answers = shuffle(
+      //   data[0].questions[0].incorrect_answers.concat(
+      //     data[0].questions[0].correct_answer
+      //   )
+      // );
+      setCurrentQuestion(formatQuestion(data, questionNumber));
     });
     socket.on("gameStarted", () => {
       setMode(PLAY);
@@ -79,7 +89,7 @@ function App() {
     // eslint-disable-next-line
   }, []);
 
-  // State modifiers
+  // Game Functions modifiers
   const searchRoom = (code) => {
     setSearchGameId(code);
   };
