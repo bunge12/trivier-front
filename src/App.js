@@ -7,6 +7,7 @@ import Button from "./components/Button";
 import WaitingRoom from "./components/WaitingRoom";
 import GameInfo from "./components/GameInfo";
 import Question from "./components/Question";
+import ScoreBoard from "./components/ScoreBoard";
 
 const WELCOME = "WELCOME"; // Welcome Screen
 const NEW = "NEW"; // Create new Room
@@ -14,29 +15,13 @@ const JOIN = "JOIN"; // Join Existing Room
 const NAME = "NAME"; // Add name to existing room
 const WAITING = "WAITING"; // Waiting Room
 const PLAY = "PLAY"; // Questions
+const SCOREBOARD = "SCOREBOARD"; // Questions
 
 const Title = styled.div`
   margin-bottom: 1vh;
 `;
 
 // Helper Functions
-const shuffle = (a) => {
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-};
-
-const formatQuestion = (data, number) => {
-  const question = data[0].questions[0];
-  question.all_answers = shuffle(
-    data[0].questions[0].incorrect_answers.concat(
-      data[0].questions[0].correct_answer
-    )
-  );
-  return question;
-};
 const generateId = (length) => {
   var result = "";
   var characters = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789";
@@ -55,8 +40,18 @@ function App() {
   const [mode, setMode] = useState(WELCOME);
   const [admin, setAdmin] = useState(false);
   const [gameData, setGameData] = useState(null);
-  const [questionNumber, setQuestionNumber] = useState(0);
+  // const [started, setStarted] = useState(false);
+  // const [questionNumber, setQuestionNumber] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState({});
+
+  // Timer to Scroll through questions
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     console.log(questionNumber);
+  //     setQuestionNumber(questionNumber + 1);
+  //   }, 7000);
+  //   return () => clearInterval(timer);
+  // }, [started]);
 
   // Socket.io listeners
   useEffect(() => {
@@ -75,16 +70,17 @@ function App() {
       setMode(WAITING);
       admin && setAdmin(true);
       console.log("created, waiting  to start");
-      // const firstQuestion = data[0].questions[0];
-      // firstQuestion.all_answers = shuffle(
-      //   data[0].questions[0].incorrect_answers.concat(
-      //     data[0].questions[0].correct_answer
-      //   )
-      // );
-      setCurrentQuestion(formatQuestion(data, questionNumber));
+      setCurrentQuestion(data[0].questions[0]);
     });
     socket.on("gameStarted", () => {
       setMode(PLAY);
+    });
+    socket.on("nextQuestion", (data, count) => {
+      console.log("next q", data, count);
+      setCurrentQuestion(data[0].questions[count + 1]);
+    });
+    socket.on("gameOver", () => {
+      setMode(SCOREBOARD);
     });
     // eslint-disable-next-line
   }, []);
@@ -110,6 +106,10 @@ function App() {
 
   const startGame = () => {
     socket.emit("startGame", currentGameId);
+  };
+
+  const recordScore = () => {
+    socket.emit("recordScore", currentGameId, userId);
   };
 
   return (
@@ -158,15 +158,27 @@ function App() {
           <br />
           Waiting room:
           <WaitingRoom players={gameData[0].players} />
-          {admin && gameData[0].players.length > 1 && (
+          <Button text="Start Game" callback={startGame}></Button>
+          {/* {admin && gameData[0].players.length > 1 && (
             <Button text="Start Game" callback={startGame}></Button>
           )}
           {admin &&
             gameData[0].players.length === 1 &&
-            "Waiting for other players to join..."}
+            "Waiting for other players to join..."} */}
         </>
       )}
-      {mode === PLAY && <>{<Question data={currentQuestion}></Question>}</>}
+      {mode === PLAY && (
+        <>
+          {
+            <Question
+              key={currentQuestion.question}
+              data={currentQuestion}
+              score={recordScore}
+            ></Question>
+          }
+        </>
+      )}
+      {mode === SCOREBOARD && <ScoreBoard players={gameData[0].players} />}
     </div>
   );
 }

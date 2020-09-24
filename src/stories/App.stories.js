@@ -31,6 +31,7 @@ const question2 = {
   question:
     "The music group Daft Punk got their name from a negative review they recieved.",
   correct_answer: "True",
+  incorrect_answers: ["False"],
   all_answers: ["True", "False"],
 };
 
@@ -40,6 +41,11 @@ const question3 = {
   difficulty: "easy",
   question: "Which of the following presidents is not on Mount Rushmore?",
   correct_answer: "John F. Kennedy",
+  incorrect_answer: [
+    "Theodore Roosevelt",
+    "Abraham Lincoln",
+    "Thomas Jefferson",
+  ],
   all_answers: [
     "Theodore Roosevelt",
     "Abraham Lincoln",

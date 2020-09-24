@@ -29,7 +29,6 @@ export default function Question(props) {
 
   useEffect(() => {
     if (counter < 1) {
-      console.log("stop");
       setShowCorrect(answers.indexOf(correct_answer));
       setDisabled(true);
     }
@@ -37,14 +36,27 @@ export default function Question(props) {
       counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
     return () => clearInterval(timer);
   }, [counter, answers, correct_answer]);
+
   const checkWinner = (answer) => {
-    answer === correct_answer ? console.log("YES") : console.log("NO");
-    setShowCorrect(answers.indexOf(correct_answer));
-    setDisabled(true);
+    // answer === correct_answer ? console.log("YES") : console.log("NO");
+    if (answer === correct_answer) {
+      // inform App
+      props.score();
+      setDisabled(true);
+    } else {
+      setShowCorrect(answers.indexOf(correct_answer));
+      setDisabled(true);
+    }
+  };
+
+  const decodeHTMLEntities = (text) => {
+    var textArea = document.createElement("textarea");
+    textArea.innerHTML = text;
+    return textArea.value;
   };
   const list = answers.map((each, index) => (
     <SingleOption
-      key={index}
+      key={each}
       callback={checkWinner}
       text={each}
       winner={correct_answer}
@@ -55,7 +67,7 @@ export default function Question(props) {
   ));
   return (
     <Container>
-      <Text>{question}</Text>
+      <Text>{decodeHTMLEntities(question)}</Text>
       <Options>{list}</Options>
       <Timer>00:{counter > 9 ? counter : "0" + counter}</Timer>
     </Container>

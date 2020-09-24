@@ -28,6 +28,12 @@ const Correct = styled.button`
 
 export default function SingleOption(props) {
   const [status, setStatus] = useState(0); // 0 = not answered, 1 = correct, 2 = incorrect
+  const decodeHTMLEntities = (text) => {
+    var textArea = document.createElement("textarea");
+    textArea.innerHTML = text;
+    return textArea.value;
+  };
+  const text = decodeHTMLEntities(props.text);
   useEffect(() => {
     if (props.showCorrect === props.answerIndex) {
       setStatus(1);
@@ -45,17 +51,17 @@ export default function SingleOption(props) {
     <>
       {status === 0 && (
         <Option onClick={check} disabled={props.disabled}>
-          {props.text}
+          {text}
         </Option>
       )}
       {status === 1 && (
         <Correct onClick={check} disabled={props.disabled}>
-          {props.text}
+          {text}
         </Correct>
       )}
       {status === 2 && (
         <Wrong onClick={check} disabled={props.disabled}>
-          {props.text}
+          {text}
         </Wrong>
       )}
     </>
