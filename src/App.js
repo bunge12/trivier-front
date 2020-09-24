@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-// import axios from "axios";
 import styled from "styled-components";
 import { socket } from "./service/socket";
 import TextInput from "./components/TextInput";
 import Button from "./components/Button";
 import WaitingRoom from "./components/WaitingRoom";
+import GameInfo from "./components/GameInfo";
 
 const WELCOME = "WELCOME"; // Welcome Screen
 const NEW = "NEW"; // Create new Room
 const JOIN = "JOIN"; // Join Existing Room
 const NAME = "NAME"; // Add name to existing room
 const WAITING = "WAITING"; // Waiting Room
+const PLAY = "PLAY"; // Questions
 
 const Title = styled.div`
   margin-bottom: 1vh;
@@ -53,19 +54,13 @@ function App() {
       admin && setAdmin(true);
       console.log("created, waiting  to start");
     });
+    socket.on("gameStarted", () => {
+      setMode(PLAY);
+    });
     // eslint-disable-next-line
   }, []);
 
-  const getGame = () => {
-    socket.emit("searchGame", searchGameId);
-  };
-  const newGame = () => {
-    console.log("newGame");
-    socket.emit("newGame", name, userId);
-  };
-  const addToGame = () => {
-    socket.emit("addToGame", currentGameId, name, userId);
-  };
+  // State modifiers
   const searchRoom = (code) => {
     setSearchGameId(code);
   };
@@ -73,15 +68,25 @@ function App() {
     setName(name);
   };
 
+  // Socket Actions
+  const getGame = () => {
+    socket.emit("searchGame", searchGameId);
+  };
+  const newGame = () => {
+    socket.emit("newGame", name, userId);
+  };
+  const addToGame = () => {
+    socket.emit("addToGame", currentGameId, name, userId);
+  };
+
+  const startGame = () => {
+    socket.emit("startGame", currentGameId);
+  };
+
   return (
     <div className="App">
       <Title>Trivier</Title>
-      {currentGameId && (
-        <>
-          Room code {currentGameId} | ({name})
-          <br />
-        </>
-      )}
+      {currentGameId && <GameInfo name={name} room={currentGameId}></GameInfo>}
       {mode === WELCOME && (
         <>
           <Button text="New Game" callback={() => setMode(NEW)}></Button>
@@ -95,6 +100,7 @@ function App() {
             placeholder="Enter Your Name"
             callback={saveName}
           ></TextInput>
+          <br />
           <Button text="Create room" callback={newGame}></Button>
         </>
       )}
@@ -104,6 +110,7 @@ function App() {
             placeholder="Enter Room Code"
             callback={searchRoom}
           ></TextInput>
+          <br />
           <Button text="Find room" callback={getGame}></Button>
         </>
       )}
@@ -113,6 +120,7 @@ function App() {
             placeholder="Enter Your Name"
             callback={saveName}
           ></TextInput>
+          <br />
           <Button text="Join room" callback={addToGame}></Button>
         </>
       )}
@@ -122,13 +130,14 @@ function App() {
           Waiting room:
           <WaitingRoom players={gameData[0].players} />
           {admin && gameData[0].players.length > 1 && (
-            <Button text="Start Game" callback={() => {}}></Button>
+            <Button text="Start Game" callback={startGame}></Button>
           )}
           {admin &&
             gameData[0].players.length === 1 &&
             "Waiting for other players to join..."}
         </>
       )}
+      {mode === PLAY && <>display questions, etc.</>}
     </div>
   );
 }
