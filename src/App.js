@@ -6,6 +6,7 @@ import TextInput from "./components/TextInput";
 import Button from "./components/Button";
 import WaitingRoom from "./components/WaitingRoom";
 import GameInfo from "./components/GameInfo";
+import Question from "./components/Question";
 
 const WELCOME = "WELCOME"; // Welcome Screen
 const NEW = "NEW"; // Create new Room
@@ -44,6 +45,8 @@ function App() {
   const [mode, setMode] = useState(WELCOME);
   const [admin, setAdmin] = useState(false);
   const [gameData, setGameData] = useState(null);
+  // const [questionNumber, setQuestionNumber] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState({});
 
   // Socket.io listeners
   useEffect(() => {
@@ -62,6 +65,13 @@ function App() {
       setMode(WAITING);
       admin && setAdmin(true);
       console.log("created, waiting  to start");
+      const firstQuestion = data[0].questions[0];
+      firstQuestion.all_answers = shuffle(
+        data[0].questions[0].incorrect_answers.concat(
+          data[0].questions[0].correct_answer
+        )
+      );
+      setCurrentQuestion(firstQuestion);
     });
     socket.on("gameStarted", () => {
       setMode(PLAY);
@@ -146,7 +156,7 @@ function App() {
             "Waiting for other players to join..."}
         </>
       )}
-      {mode === PLAY && <>display questions, etc.</>}
+      {mode === PLAY && <>{<Question data={currentQuestion}></Question>}</>}
     </div>
   );
 }
