@@ -3,17 +3,22 @@ import styled from "styled-components";
 
 const Container = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+  color: #0075c7;
 `;
 
-const Room = styled.span``;
-const Name = styled.span``;
+const Item = styled.span`
+  font-weight: 600;
+  color: #0075c7;
+`;
 
 export default function GameInfo(props) {
   return (
     <Container>
-      <Room>{props.room}</Room>
-      <Name>{props.name}</Name>
+      <Item>Room Code: {props.room}</Item>
+      {/* <Item>{props.name}</Item> */}
     </Container>
   );
 }

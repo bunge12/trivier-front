@@ -8,6 +8,7 @@ import WaitingRoom from "./components/WaitingRoom";
 import GameInfo from "./components/GameInfo";
 import Question from "./components/Question";
 import ScoreBoard from "./components/ScoreBoard";
+import quiz from "./images/quiz.svg";
 
 const WELCOME = "WELCOME"; // Welcome Screen
 const NEW = "NEW"; // Create new Room
@@ -15,10 +16,20 @@ const JOIN = "JOIN"; // Join Existing Room
 const NAME = "NAME"; // Add name to existing room
 const WAITING = "WAITING"; // Waiting Room
 const PLAY = "PLAY"; // Questions
-const SCOREBOARD = "SCOREBOARD"; // Questions
+const SCOREBOARD = "SCOREBOARD"; // Score Board
 
 const Title = styled.div`
+  font-family: "Luckiest Guy", cursive;
   margin-bottom: 1vh;
+  font-size: xx-large;
+  color: #22c1c3;
+`;
+const Image = styled.img`
+  width: 75%;
+  margin: 2rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 // Helper Functions
@@ -40,23 +51,14 @@ function App() {
   const [mode, setMode] = useState(WELCOME);
   const [admin, setAdmin] = useState(false);
   const [gameData, setGameData] = useState(null);
-  // const [started, setStarted] = useState(false);
-  // const [questionNumber, setQuestionNumber] = useState(0);
+  const [notification, setNotification] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState({});
-
-  // Timer to Scroll through questions
-  // useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     console.log(questionNumber);
-  //     setQuestionNumber(questionNumber + 1);
-  //   }, 7000);
-  //   return () => clearInterval(timer);
-  // }, [started]);
 
   // Socket.io listeners
   useEffect(() => {
     setUserId(generateId(6));
     socket.on("roomFound", (roomId) => {
+      setNotification("Room found");
       setCurrentGameId(roomId);
       setMode(NAME);
       console.log("room joined", roomId);
@@ -79,13 +81,14 @@ function App() {
       console.log("next q", data, count);
       setCurrentQuestion(data[0].questions[count + 1]);
     });
-    socket.on("gameOver", () => {
+    socket.on("gameOver", (data) => {
+      setGameData(data);
       setMode(SCOREBOARD);
     });
     // eslint-disable-next-line
   }, []);
 
-  // Game Functions modifiers
+  // App State modifiers
   const searchRoom = (code) => {
     setSearchGameId(code);
   };
@@ -103,11 +106,9 @@ function App() {
   const addToGame = () => {
     socket.emit("addToGame", currentGameId, name, userId);
   };
-
   const startGame = () => {
     socket.emit("startGame", currentGameId);
   };
-
   const recordScore = () => {
     socket.emit("recordScore", currentGameId, userId);
   };
@@ -118,6 +119,7 @@ function App() {
       {currentGameId && <GameInfo name={name} room={currentGameId}></GameInfo>}
       {mode === WELCOME && (
         <>
+          <Image src={quiz} alt="drawing of quiz" />
           <Button text="New Game" callback={() => setMode(NEW)}></Button>
           <br />
           <Button text="Join Game" callback={() => setMode(JOIN)}></Button>

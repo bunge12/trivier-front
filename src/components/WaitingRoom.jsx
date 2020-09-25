@@ -5,8 +5,19 @@ const List = styled.ul`
   list-style-type: none;
   margin: 0;
   padding: 0;
+  text-align: center;
 `;
-const Item = styled.li``;
+const Item = styled.li`
+  background: none;
+  color: rgb(29, 54, 92);
+  border: 1px solid rgb(29, 54, 92);
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  margin: 0.25rem;
+  text-align: center;
+  width: 50%;
+  display: inline-block;
+`;
 
 export default function WaitingRoom(props) {
   const listItems = props.players.map((each, index) => (
