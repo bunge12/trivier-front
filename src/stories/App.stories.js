@@ -8,6 +8,7 @@ import WaitingRoom from "../components/WaitingRoom";
 import GameInfo from "../components/GameInfo";
 import Question from "../components/Question";
 import ScoreBoard from "../components/ScoreBoard";
+import Notification from "../components/Notification";
 
 const players = [
   { id: "YZI6TU", name: "Artur", score: 8 },
@@ -72,4 +73,10 @@ storiesOf("App", module)
   .add("Info Bar", () => <GameInfo name={"Artur"} room={"ABCD"} />)
   .add("Multiple Choice Question", () => <Question data={question1} />)
   .add("Multiple Choice Text Question", () => <Question data={question3} />)
-  .add("True/False Question", () => <Question data={question2} />);
+  .add("True/False Question", () => <Question data={question2} />)
+  .add("Error message", () => (
+    <Notification type={"error"} text={"Error message"}></Notification>
+  ))
+  .add("Success message", () => (
+    <Notification type={"success"} text={"Success message"}></Notification>
+  ));

@@ -8,6 +8,7 @@ import WaitingRoom from "./components/WaitingRoom";
 import GameInfo from "./components/GameInfo";
 import Question from "./components/Question";
 import ScoreBoard from "./components/ScoreBoard";
+import Notification from "./components/Notification";
 import quiz from "./images/quiz.svg";
 
 const WELCOME = "WELCOME"; // Welcome Screen
@@ -30,6 +31,11 @@ const Image = styled.img`
   display: block;
   margin-left: auto;
   margin-right: auto;
+`;
+const Link = styled.a`
+  color: #1d365c;
+  font-size: x-small;
+  text-decoration: none;
 `;
 
 // Helper Functions
@@ -58,32 +64,58 @@ function App() {
   useEffect(() => {
     setUserId(generateId(6));
     socket.on("roomFound", (roomId) => {
-      setNotification("Room found");
+      setNotification(
+        { type: "success", message: `Joined room ${roomId}` },
+        setTimeout(() => {
+          setNotification(null);
+        }, 3000)
+      );
       setCurrentGameId(roomId);
       setMode(NAME);
-      console.log("room joined", roomId);
     });
     socket.on("roomNotFound", () => {
-      console.log("room not found");
+      setNotification(
+        { type: "error", message: "Room not found!" },
+        setTimeout(() => {
+          setNotification(null);
+        }, 3000)
+      );
     });
     socket.on("waitingToStart", (data, admin) => {
       setGameData(data);
       setCurrentGameId(data[0].room);
       setMode(WAITING);
       admin && setAdmin(true);
-      console.log("created, waiting  to start");
       setCurrentQuestion(data[0].questions[0]);
     });
     socket.on("gameStarted", () => {
       setMode(PLAY);
     });
     socket.on("nextQuestion", (data, count) => {
-      console.log("next q", data, count);
       setCurrentQuestion(data[0].questions[count + 1]);
     });
     socket.on("gameOver", (data) => {
       setGameData(data);
       setMode(SCOREBOARD);
+    });
+    socket.on("gameEnded", () => {
+      setNotification(
+        { type: "error", message: "Game Ended since Admin left!" },
+        setTimeout(() => {
+          setNotification(null);
+        }, 3000)
+      );
+      setMode(WELCOME);
+      setCurrentGameId(null);
+    });
+    socket.on("serverError", () => {
+      setNotification(
+        { type: "error", message: "Server Error" },
+        setTimeout(() => {
+          setNotification(null);
+        }, 3000)
+      );
+      setMode(WELCOME);
     });
     // eslint-disable-next-line
   }, []);
@@ -147,6 +179,8 @@ function App() {
           ></TextInput>
           <br />
           <Button text="Find room" callback={getGame}></Button>
+          <br />
+          <Link href="/">Go Back</Link>
         </>
       )}
       {mode === NAME && (
@@ -185,6 +219,9 @@ function App() {
         </>
       )}
       {mode === SCOREBOARD && <ScoreBoard players={gameData[0].players} />}
+      {notification && (
+        <Notification type={notification.type} text={notification.message} />
+      )}
     </div>
   );
 }
