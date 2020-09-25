@@ -10,6 +10,9 @@ const Styled = styled.button`
   margin-bottom: 0.5vh;
   color: #0075c7;
   width: 50%;
+  :focus {
+    outline: none;
+  }
 `;
 
 export default function Button(props) {

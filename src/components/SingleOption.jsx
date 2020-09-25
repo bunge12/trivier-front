@@ -2,28 +2,45 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const Option = styled.button`
-  background: white;
-  padding: 1.5vh;
-  border: 1px solid black;
-  border-radius: 5%;
-  margin-top: 1.5vh;
-  color: black;
+  background: none;
+  padding: 1em;
+  border: 1px solid #0075c7;
+  border-radius: 1em;
+  margin-top: 0.5vh;
+  margin-bottom: 0.5vh;
+  color: #0075c7;
+  width: 40%;
+  :focus {
+    outline: none;
+  }
 `;
 const Wrong = styled.button`
-  background: red;
-  padding: 1.5vh;
-  border: 1px solid black;
-  border-radius: 5%;
-  margin-top: 1.5vh;
+  background: rgb(235, 129, 130);
+  border: 1px solid rgb(235, 129, 130);
+  padding: 1em;
+  border-radius: 1em;
+  margin-top: 0.5vh;
+  margin-bottom: 0.5vh;
   color: white;
+  width: 40%;
+  font-weight: bold;
+  :focus {
+    outline: none;
+  }
 `;
 const Correct = styled.button`
-  background: green;
-  padding: 1.5vh;
-  border: 1px solid black;
-  border-radius: 5%;
-  margin-top: 1.5vh;
+  background: rgb(95, 192, 136);
+  padding: 1em;
+  border: 1px solid rgb(95, 192, 136);
+  border-radius: 1em;
+  margin-top: 0.5vh;
+  margin-bottom: 0.5vh;
   color: white;
+  width: 40%;
+  font-weight: bold;
+  :focus {
+    outline: none;
+  }
 `;
 
 export default function SingleOption(props) {

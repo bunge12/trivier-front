@@ -2,15 +2,19 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import SingleOption from "./SingleOption";
 
-const Container = styled.div``;
+const Container = styled.div`
+  margin-top: 3vh;
+`;
 const Text = styled.div``;
 const Options = styled.div`
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
+  margin-top: 5vh;
 `;
 const Timer = styled.div`
   text-align: center;
+  margin-top: 3vh;
 `;
 
 export default function Question(props) {
