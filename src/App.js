@@ -119,7 +119,11 @@ function App() {
       {currentGameId && <GameInfo name={name} room={currentGameId}></GameInfo>}
       {mode === WELCOME && (
         <>
-          <Image src={quiz} alt="drawing of quiz" />
+          <Image src={quiz} alt="drawing of an online quiz" />
+          <p>
+            Play online trivia with your friends! Create or join an existing
+            room and compete with your friends wherever they are!
+          </p>
           <Button text="New Game" callback={() => setMode(NEW)}></Button>
           <br />
           <Button text="Join Game" callback={() => setMode(JOIN)}></Button>
