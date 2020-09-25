@@ -18,6 +18,7 @@ const NAME = "NAME"; // Add name to existing room
 const WAITING = "WAITING"; // Waiting Room
 const PLAY = "PLAY"; // Questions
 const SCOREBOARD = "SCOREBOARD"; // Score Board
+const NOTIF_TIMEOUT = 4000; // in ms
 
 const Title = styled.div`
   font-family: "Luckiest Guy", cursive;
@@ -32,7 +33,7 @@ const Image = styled.img`
   margin-left: auto;
   margin-right: auto;
 `;
-const Link = styled.a`
+const Link = styled.span`
   color: #1d365c;
   font-size: x-small;
   text-decoration: none;
@@ -68,7 +69,7 @@ function App() {
         { type: "success", message: `Joined room ${roomId}` },
         setTimeout(() => {
           setNotification(null);
-        }, 3000)
+        }, NOTIF_TIMEOUT)
       );
       setCurrentGameId(roomId);
       setMode(NAME);
@@ -78,7 +79,7 @@ function App() {
         { type: "error", message: "Room not found!" },
         setTimeout(() => {
           setNotification(null);
-        }, 3000)
+        }, NOTIF_TIMEOUT)
       );
     });
     socket.on("waitingToStart", (data, admin) => {
@@ -87,6 +88,9 @@ function App() {
       setMode(WAITING);
       admin && setAdmin(true);
       setCurrentQuestion(data[0].questions[0]);
+    });
+    socket.on("someoneLeft", (data) => {
+      setGameData(data);
     });
     socket.on("gameStarted", () => {
       setMode(PLAY);
@@ -100,10 +104,10 @@ function App() {
     });
     socket.on("gameEnded", () => {
       setNotification(
-        { type: "error", message: "Game Ended since Admin left!" },
+        { type: "error", message: "Game Ended since the admin left!" },
         setTimeout(() => {
           setNotification(null);
-        }, 3000)
+        }, NOTIF_TIMEOUT)
       );
       setMode(WELCOME);
       setCurrentGameId(null);
@@ -113,7 +117,7 @@ function App() {
         { type: "error", message: "Server Error" },
         setTimeout(() => {
           setNotification(null);
-        }, 3000)
+        }, NOTIF_TIMEOUT)
       );
       setMode(WELCOME);
     });
@@ -143,6 +147,14 @@ function App() {
   };
   const recordScore = () => {
     socket.emit("recordScore", currentGameId, userId);
+  };
+  const playAgain = () => {
+    socket.emit("playAgain", currentGameId);
+  };
+  const leaveRoom = () => {
+    setMode(WELCOME);
+    setCurrentGameId(null);
+    socket.emit("leaveRoom", currentGameId, userId, admin);
   };
 
   return (
@@ -180,7 +192,13 @@ function App() {
           <br />
           <Button text="Find room" callback={getGame}></Button>
           <br />
-          <Link href="/">Go Back</Link>
+          <Link
+            onClick={() => {
+              setMode(WELCOME);
+            }}
+          >
+            Go Back
+          </Link>
         </>
       )}
       {mode === NAME && (
@@ -202,6 +220,7 @@ function App() {
           {/* {admin && gameData[0].players.length > 1 && (
             <Button text="Start Game" callback={startGame}></Button>
           )}
+          <br />
           {admin &&
             gameData[0].players.length === 1 &&
             "Waiting for other players to join..."} */}
@@ -218,7 +237,15 @@ function App() {
           }
         </>
       )}
-      {mode === SCOREBOARD && <ScoreBoard players={gameData[0].players} />}
+      {mode === SCOREBOARD && (
+        <>
+          <ScoreBoard players={gameData[0].players} />
+          <br />
+          {admin && <Button text="Play Again" callback={playAgain}></Button>}
+          <br />
+          <Link onClick={leaveRoom}>End Game</Link>
+        </>
+      )}
       {notification && (
         <Notification type={notification.type} text={notification.message} />
       )}
