@@ -216,14 +216,14 @@ function App() {
           <br />
           Waiting room:
           <WaitingRoom players={gameData[0].players} />
-          <Button text="Start Game" callback={startGame}></Button>
-          {/* {admin && gameData[0].players.length > 1 && (
+          {/* <Button text="Start Game" callback={startGame}></Button> */}
+          {admin && gameData[0].players.length > 1 && (
             <Button text="Start Game" callback={startGame}></Button>
           )}
           <br />
           {admin &&
             gameData[0].players.length === 1 &&
-            "Waiting for other players to join..."} */}
+            "Waiting for other players to join..."}
         </>
       )}
       {mode === PLAY && (
