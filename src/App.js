@@ -38,6 +38,17 @@ const Link = styled.span`
   font-size: x-small;
   text-decoration: none;
 `;
+const Footer = styled.footer`
+  color: white;
+  margin-top: 1rem;
+  font-size: x-small;
+  a:visited {
+    color: white;
+  }
+`;
+const Text = styled.div`
+  font-size: small;
+`;
 
 // Helper Functions
 const generateId = (length) => {
@@ -58,6 +69,8 @@ function App() {
   const [mode, setMode] = useState(WELCOME);
   const [admin, setAdmin] = useState(false);
   const [gameData, setGameData] = useState(null);
+  const [numberOfQuestions, setNumberOfQuestions] = useState(null);
+  const [number, setNumber] = useState(1);
   const [notification, setNotification] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState({});
 
@@ -82,10 +95,11 @@ function App() {
         }, NOTIF_TIMEOUT)
       );
     });
-    socket.on("waitingToStart", (data, admin) => {
+    socket.on("waitingToStart", (data, questions, admin) => {
       setGameData(data);
       setCurrentGameId(data[0].room);
       setMode(WAITING);
+      setNumberOfQuestions(questions);
       admin && setAdmin(true);
       setCurrentQuestion(data[0].questions[0]);
     });
@@ -96,6 +110,7 @@ function App() {
       setMode(PLAY);
     });
     socket.on("nextQuestion", (data, count) => {
+      setNumber(count + 2);
       setCurrentQuestion(data[0].questions[count + 1]);
     });
     socket.on("gameOver", (data) => {
@@ -104,7 +119,7 @@ function App() {
     });
     socket.on("gameEnded", () => {
       setNotification(
-        { type: "error", message: "Game Ended since the admin left!" },
+        { type: "error", message: "Game ended since the admin left!" },
         setTimeout(() => {
           setNotification(null);
         }, NOTIF_TIMEOUT)
@@ -161,95 +176,119 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <Title>Trivier</Title>
-      {currentGameId && <GameInfo name={name} room={currentGameId}></GameInfo>}
-      {mode === WELCOME && (
-        <>
-          <Image src={quiz} alt="drawing of an online quiz" />
-          <p>
-            Play online trivia with your friends! Create or join an existing
-            room and compete with your friends wherever they are!
-          </p>
-          <Button text="New Game" callback={() => setMode(NEW)}></Button>
-          <br />
-          <Button text="Join Game" callback={() => setMode(JOIN)}></Button>
-        </>
-      )}
-      {mode === NEW && (
-        <>
-          <TextInput
-            placeholder="Enter Your Name"
-            callback={saveName}
-          ></TextInput>
-          <br />
-          <Button text="Create room" callback={newGame}></Button>
-        </>
-      )}
-      {mode === JOIN && (
-        <>
-          <TextInput
-            placeholder="Enter Room Code"
-            callback={searchRoom}
-          ></TextInput>
-          <br />
-          <Button text="Find room" callback={getGame}></Button>
-          <br />
-          <Link
-            onClick={() => {
-              setMode(WELCOME);
-            }}
-          >
-            Go Back
-          </Link>
-        </>
-      )}
-      {mode === NAME && (
-        <>
-          <TextInput
-            placeholder="Enter Your Name"
-            callback={saveName}
-          ></TextInput>
-          <br />
-          <Button text="Join room" callback={addToGame}></Button>
-        </>
-      )}
-      {mode === WAITING && (
-        <>
-          <br />
-          Waiting room:
-          <WaitingRoom players={gameData[0].players} />
-          {admin && <Button text="Start Game" callback={startGame}></Button>}
-          <br />
-          {admin &&
-            gameData[0].players.length === 1 &&
-            "Waiting for other players to join..."}
-        </>
-      )}
-      {mode === PLAY && (
-        <>
-          {
-            <Question
-              key={currentQuestion.question}
-              data={currentQuestion}
-              score={recordScore}
-            ></Question>
-          }
-        </>
-      )}
-      {mode === SCOREBOARD && (
-        <>
-          <ScoreBoard players={gameData[0].players} />
-          <br />
-          {admin && <Button text="Play Again" callback={playAgain}></Button>}
-          <br />
-          <Link onClick={leaveRoom}>End Game</Link>
-        </>
-      )}
-      {notification && (
-        <Notification type={notification.type} text={notification.message} />
-      )}
-    </div>
+    <>
+      <div className="App">
+        <Title>Trivier</Title>
+        {currentGameId && (
+          <GameInfo name={name} room={currentGameId}></GameInfo>
+        )}
+        {mode === WELCOME && (
+          <>
+            <Image src={quiz} alt="drawing of an online quiz" />
+            <p>
+              Play online trivia with your friends! Create or join an existing
+              room and compete with your friends wherever they are!
+            </p>
+            <Button text="New Game" callback={() => setMode(NEW)}></Button>
+            <br />
+            <Button text="Join Game" callback={() => setMode(JOIN)}></Button>
+          </>
+        )}
+        {mode === NEW && (
+          <>
+            <TextInput
+              placeholder="Enter Your Name"
+              callback={saveName}
+            ></TextInput>
+            <br />
+            <Button text="Create room" callback={newGame}></Button>
+          </>
+        )}
+        {mode === JOIN && (
+          <>
+            <TextInput
+              placeholder="Enter Room Code"
+              callback={searchRoom}
+            ></TextInput>
+            <br />
+            <Button text="Find room" callback={getGame}></Button>
+            <br />
+            <Link
+              onClick={() => {
+                setMode(WELCOME);
+              }}
+            >
+              Go Back
+            </Link>
+          </>
+        )}
+        {mode === NAME && (
+          <>
+            <TextInput
+              placeholder="Enter Your Name"
+              callback={saveName}
+            ></TextInput>
+            <br />
+            <Button text="Join room" callback={addToGame}></Button>
+          </>
+        )}
+        {mode === WAITING && (
+          <>
+            <br />
+            <Text>Waiting room:</Text>
+            <WaitingRoom players={gameData[0].players} />
+            {admin && gameData[0].players.length === 1 && (
+              <Text>Wait for other players to join, or</Text>
+            )}
+            {admin && (
+              <>
+                <Button text="Start Game" callback={startGame}></Button>
+                <br />
+                <Link onClick={leaveRoom}>End Game</Link>
+              </>
+            )}
+          </>
+        )}
+        {mode === PLAY && (
+          <>
+            {
+              <Question
+                key={currentQuestion.question}
+                data={currentQuestion}
+                score={recordScore}
+                questions={numberOfQuestions}
+                number={number}
+              ></Question>
+            }
+          </>
+        )}
+        {mode === SCOREBOARD && (
+          <>
+            <ScoreBoard
+              players={gameData[0].players}
+              number={numberOfQuestions}
+            />
+            <br />
+            {admin && <Button text="Play Again" callback={playAgain}></Button>}
+            <br />
+            <Link onClick={leaveRoom}>End Game</Link>
+          </>
+        )}
+        {notification && (
+          <Notification type={notification.type} text={notification.message} />
+        )}
+      </div>
+      <Footer>
+        Made by{" "}
+        <a
+          href="https://github.com/bunge12"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Artur Iatsko
+        </a>
+      </Footer>
+    </>
   );
 }
 

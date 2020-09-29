@@ -24,7 +24,8 @@ export default function ScoreBoard(props) {
     .sort((a, b) => b.score - a.score)
     .map((each, index) => (
       <Item key={index}>
-        {each.name} - {each.score}
+        {index === 0 ? "🥇 " : index === 1 ? "🥈 " : index === 2 ? "🥉 " : ""}
+        {each.name} - {each.score}/{props.number}
       </Item>
     ));
 

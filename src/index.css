@@ -28,4 +28,5 @@ code {
     rgba(34, 193, 195, 1) 0%,
     rgba(45, 168, 253, 1) 100%
   );
+  flex-direction: column;
 }

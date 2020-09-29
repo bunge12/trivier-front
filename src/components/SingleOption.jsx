@@ -13,6 +13,10 @@ const Option = styled.button`
   :focus {
     outline: none;
   }
+  @media only screen and (min-width: 1200px) {
+    font-size: larger;
+    font-weight: bold;
+  }
 `;
 const Wrong = styled.button`
   background: rgb(235, 129, 130);
@@ -27,6 +31,10 @@ const Wrong = styled.button`
   :focus {
     outline: none;
   }
+  @media only screen and (min-width: 1200px) {
+    font-size: larger;
+    font-weight: bold;
+  }
 `;
 const Correct = styled.button`
   background: rgb(95, 192, 136);
@@ -40,6 +48,10 @@ const Correct = styled.button`
   font-weight: bold;
   :focus {
     outline: none;
+  }
+  @media only screen and (min-width: 1200px) {
+    font-size: larger;
+    font-weight: bold;
   }
 `;
 

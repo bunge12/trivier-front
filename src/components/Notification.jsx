@@ -12,6 +12,7 @@ const Container = styled.div`
   border: 1px solid transparent;
   border-color: ${(props) => (props.type === "error" ? "#ffeeba" : "#c3e6cb")};
   border-radius: 0.25rem;
+  font-size: smaller;
 `;
 
 export default function Notification(props) {

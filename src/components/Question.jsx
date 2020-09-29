@@ -5,7 +5,12 @@ import SingleOption from "./SingleOption";
 const Container = styled.div`
   margin-top: 3vh;
 `;
-const Text = styled.div``;
+const Text = styled.div`
+  @media only screen and (min-width: 1200px) {
+    font-size: larger;
+    font-weight: bold;
+  }
+`;
 const Options = styled.div`
   display: flex;
   justify-content: space-evenly;
@@ -15,6 +20,14 @@ const Options = styled.div`
 const Timer = styled.div`
   text-align: center;
   margin-top: 3vh;
+  font-weight: bold;
+  color: ${(props) => (props.color === "red" ? "red" : "black")};
+  font-size: ${(props) => (props.color === "red" ? "larger" : "large")};
+`;
+const Count = styled.div`
+  text-align: center;
+  margin-top: 2vh;
+  font-size: small;
 `;
 
 export default function Question(props) {
@@ -42,9 +55,7 @@ export default function Question(props) {
   }, [counter, answers, correct_answer]);
 
   const checkWinner = (answer) => {
-    // answer === correct_answer ? console.log("YES") : console.log("NO");
     if (answer === correct_answer) {
-      // inform App
       props.score();
       setDisabled(true);
     } else {
@@ -73,7 +84,12 @@ export default function Question(props) {
     <Container>
       <Text>{decodeHTMLEntities(question)}</Text>
       <Options>{list}</Options>
-      <Timer>00:{counter > 9 ? counter : "0" + counter}</Timer>
+      <Timer color={counter < 4 ? "red" : "black"}>
+        00:{counter > 9 ? counter : "0" + counter}
+      </Timer>
+      <Count>
+        Question {props.number} of {props.questions}
+      </Count>
     </Container>
   );
 }
