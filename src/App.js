@@ -111,6 +111,7 @@ function App() {
       );
       setMode(WELCOME);
       setCurrentGameId(null);
+      setGameData(null);
     });
     socket.on("serverError", () => {
       setNotification(
@@ -120,6 +121,8 @@ function App() {
         }, NOTIF_TIMEOUT)
       );
       setMode(WELCOME);
+      setCurrentGameId(null);
+      setGameData(null);
     });
     // eslint-disable-next-line
   }, []);
@@ -216,10 +219,7 @@ function App() {
           <br />
           Waiting room:
           <WaitingRoom players={gameData[0].players} />
-          {/* <Button text="Start Game" callback={startGame}></Button> */}
-          {admin && gameData[0].players.length > 1 && (
-            <Button text="Start Game" callback={startGame}></Button>
-          )}
+          {admin && <Button text="Start Game" callback={startGame}></Button>}
           <br />
           {admin &&
             gameData[0].players.length === 1 &&

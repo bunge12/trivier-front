@@ -10,6 +10,7 @@ const Field = styled.input`
   margin-bottom: 0.5vh;
   color: #0075c7;
   width: 50%;
+  font-size: 16px;
   :focus {
     outline: none;
   }

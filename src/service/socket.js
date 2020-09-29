@@ -1,4 +1,7 @@
 import io from "socket.io-client";
-const ENDPOINT = "http://localhost:8001";
+require("dotenv").config();
+
+const ENDPOINT = "https://trivier.azurewebsites.net/";
+// const ENDPOINT = "http://localhost:8080";
 
 export const socket = io(ENDPOINT);

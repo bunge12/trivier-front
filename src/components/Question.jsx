@@ -21,7 +21,7 @@ export default function Question(props) {
   const { question, correct_answer, all_answers, type } = props.data;
   const [showCorrect, setShowCorrect] = useState(null);
   const [disabled, setDisabled] = useState(false);
-  const [counter, setCounter] = useState(7);
+  const [counter, setCounter] = useState(10);
 
   let answers;
   if (type === "multiple") {
