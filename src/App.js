@@ -10,6 +10,7 @@ import Question from "./components/Question";
 import ScoreBoard from "./components/ScoreBoard";
 import Notification from "./components/Notification";
 import quiz from "./images/quiz.svg";
+import ReactGA from "react-ga";
 
 const WELCOME = "WELCOME"; // Welcome Screen
 const NEW = "NEW"; // Create new Room
@@ -45,6 +46,9 @@ const Footer = styled.footer`
   a:visited {
     color: white;
   }
+  a {
+    color: white;
+  }
 `;
 const Text = styled.div`
   font-size: small;
@@ -62,8 +66,10 @@ const generateId = (length) => {
 };
 
 function App() {
-  const [searchGameId, setSearchGameId] = useState(null);
-  const [currentGameId, setCurrentGameId] = useState(null);
+  ReactGA.initialize("G-DGFT0QCEJJ");
+  ReactGA.pageview(window.location.pathname + window.location.search);
+  const [searchRoomId, setSearchRoomId] = useState(null);
+  const [currentRoomId, setcurrentRoomId] = useState(null);
   const [name, setName] = useState(null);
   const [userId, setUserId] = useState(null);
   const [mode, setMode] = useState(WELCOME);
@@ -84,7 +90,7 @@ function App() {
           setNotification(null);
         }, NOTIF_TIMEOUT)
       );
-      setCurrentGameId(roomId);
+      setcurrentRoomId(roomId);
       setMode(NAME);
     });
     socket.on("roomNotFound", () => {
@@ -97,7 +103,7 @@ function App() {
     });
     socket.on("waitingToStart", (data, questions, admin) => {
       setGameData(data);
-      setCurrentGameId(data[0].room);
+      setcurrentRoomId(data[0].room);
       setMode(WAITING);
       setNumberOfQuestions(questions);
       admin && setAdmin(true);
@@ -125,7 +131,7 @@ function App() {
         }, NOTIF_TIMEOUT)
       );
       setMode(WELCOME);
-      setCurrentGameId(null);
+      setcurrentRoomId(null);
       setGameData(null);
     });
     socket.on("serverError", () => {
@@ -136,7 +142,7 @@ function App() {
         }, NOTIF_TIMEOUT)
       );
       setMode(WELCOME);
-      setCurrentGameId(null);
+      setcurrentRoomId(null);
       setGameData(null);
     });
     // eslint-disable-next-line
@@ -144,43 +150,43 @@ function App() {
 
   // App State modifiers
   const searchRoom = (code) => {
-    setSearchGameId(code);
+    setSearchRoomId(code);
   };
   const saveName = (name) => {
     setName(name);
   };
 
   // Socket Actions
-  const getGame = () => {
-    socket.emit("searchGame", searchGameId);
+  const getRoom = () => {
+    socket.emit("searchRoom", searchRoomId);
   };
   const newGame = () => {
     socket.emit("newGame", name, userId);
   };
   const addToGame = () => {
-    socket.emit("addToGame", currentGameId, name, userId);
+    socket.emit("addToGame", currentRoomId, name, userId);
   };
   const startGame = () => {
-    socket.emit("startGame", currentGameId);
+    socket.emit("startGame", currentRoomId);
   };
   const recordScore = () => {
-    socket.emit("recordScore", currentGameId, userId);
+    socket.emit("recordScore", currentRoomId, userId);
   };
   const playAgain = () => {
-    socket.emit("playAgain", currentGameId);
+    socket.emit("playAgain", currentRoomId);
   };
   const leaveRoom = () => {
     setMode(WELCOME);
-    setCurrentGameId(null);
-    socket.emit("leaveRoom", currentGameId, userId, admin);
+    setcurrentRoomId(null);
+    socket.emit("leaveRoom", currentRoomId, userId, admin);
   };
 
   return (
     <>
       <div className="App">
         <Title>Trivier</Title>
-        {currentGameId && (
-          <GameInfo name={name} room={currentGameId}></GameInfo>
+        {currentRoomId && (
+          <GameInfo name={name} room={currentRoomId}></GameInfo>
         )}
         {mode === WELCOME && (
           <>
@@ -211,7 +217,7 @@ function App() {
               callback={searchRoom}
             ></TextInput>
             <br />
-            <Button text="Find room" callback={getGame}></Button>
+            <Button text="Find room" callback={getRoom}></Button>
             <br />
             <Link
               onClick={() => {
