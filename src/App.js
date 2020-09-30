@@ -66,8 +66,6 @@ const generateId = (length) => {
 };
 
 function App() {
-  ReactGA.initialize("G-DGFT0QCEJJ");
-  ReactGA.pageview(window.location.pathname + window.location.search);
   const [searchRoomId, setSearchRoomId] = useState(null);
   const [currentRoomId, setcurrentRoomId] = useState(null);
   const [name, setName] = useState(null);
@@ -82,6 +80,8 @@ function App() {
 
   // Socket.io listeners
   useEffect(() => {
+    ReactGA.initialize("UA-179116325-1");
+    ReactGA.pageview(window.location.pathname + window.location.search);
     setUserId(generateId(6));
     socket.on("roomFound", (roomId) => {
       setNotification(
