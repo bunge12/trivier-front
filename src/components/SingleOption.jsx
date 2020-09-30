@@ -2,50 +2,29 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const Option = styled.button`
-  background: none;
+  background: ${(props) =>
+    props.type === "wrong"
+      ? "rgb(235, 129, 130)"
+      : props.type === "correct"
+      ? "rgb(95, 192, 136)"
+      : "none"};
+  border: ${(props) =>
+    props.type === "wrong"
+      ? "1px solid rgb(235, 129, 130)"
+      : props.type === "correct"
+      ? "1px solid rgb(95, 192, 136)"
+      : "1px solid #0075c7"};
+  color: ${(props) =>
+    props.type === "wrong"
+      ? "white"
+      : props.type === "correct"
+      ? "white"
+      : "#0075c7"};
   padding: 1em;
-  border: 1px solid #0075c7;
   border-radius: 1em;
   margin-top: 0.5vh;
   margin-bottom: 0.5vh;
-  color: #0075c7;
   width: 40%;
-  :focus {
-    outline: none;
-  }
-  @media only screen and (min-width: 1200px) {
-    font-size: larger;
-    font-weight: bold;
-  }
-`;
-const Wrong = styled.button`
-  background: rgb(235, 129, 130);
-  border: 1px solid rgb(235, 129, 130);
-  padding: 1em;
-  border-radius: 1em;
-  margin-top: 0.5vh;
-  margin-bottom: 0.5vh;
-  color: white;
-  width: 40%;
-  font-weight: bold;
-  :focus {
-    outline: none;
-  }
-  @media only screen and (min-width: 1200px) {
-    font-size: larger;
-    font-weight: bold;
-  }
-`;
-const Correct = styled.button`
-  background: rgb(95, 192, 136);
-  padding: 1em;
-  border: 1px solid rgb(95, 192, 136);
-  border-radius: 1em;
-  margin-top: 0.5vh;
-  margin-bottom: 0.5vh;
-  color: white;
-  width: 40%;
-  font-weight: bold;
   :focus {
     outline: none;
   }
@@ -84,14 +63,14 @@ export default function SingleOption(props) {
         </Option>
       )}
       {status === 1 && (
-        <Correct onClick={check} disabled={props.disabled}>
+        <Option type="correct" onClick={check} disabled={props.disabled}>
           {text}
-        </Correct>
+        </Option>
       )}
       {status === 2 && (
-        <Wrong onClick={check} disabled={props.disabled}>
+        <Option type="wrong" onClick={check} disabled={props.disabled}>
           {text}
-        </Wrong>
+        </Option>
       )}
     </>
   );

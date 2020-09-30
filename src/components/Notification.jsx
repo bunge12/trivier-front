@@ -11,7 +11,7 @@ const Container = styled.div`
   margin-top: 1rem;
   border: 1px solid transparent;
   border-color: ${(props) => (props.type === "error" ? "#ffeeba" : "#c3e6cb")};
-  border-radius: 0.25rem;
+  border-radius: 1em;
   font-size: smaller;
 `;
 

@@ -25,6 +25,7 @@ export default function TextInput(props) {
   return (
     <Field
       type="text"
+      required="required"
       placeholder={props.placeholder}
       value={value}
       onChange={saveValue}

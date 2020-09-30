@@ -6,6 +6,7 @@ const Container = styled.div`
   margin-top: 3vh;
 `;
 const Text = styled.div`
+  text-align: center;
   @media only screen and (min-width: 1200px) {
     font-size: larger;
     font-weight: bold;

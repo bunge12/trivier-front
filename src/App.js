@@ -34,10 +34,11 @@ const Image = styled.img`
   margin-left: auto;
   margin-right: auto;
 `;
-const Link = styled.span`
+const Link = styled.div`
   color: #1d365c;
   font-size: x-small;
   text-decoration: none;
+  margin-top: 2vh;
 `;
 const Footer = styled.footer`
   color: white;
@@ -66,9 +67,9 @@ const generateId = (length) => {
 };
 
 function App() {
-  const [searchRoomId, setSearchRoomId] = useState(null);
+  const [searchRoomId, setSearchRoomId] = useState("");
   const [currentRoomId, setcurrentRoomId] = useState(null);
-  const [name, setName] = useState(null);
+  const [name, setName] = useState("");
   const [userId, setUserId] = useState(null);
   const [mode, setMode] = useState(WELCOME);
   const [admin, setAdmin] = useState(false);
@@ -155,13 +156,30 @@ function App() {
   const saveName = (name) => {
     setName(name);
   };
+  const back = () => {
+    setMode(WELCOME);
+  };
 
   // Socket Actions
   const getRoom = () => {
-    socket.emit("searchRoom", searchRoomId);
+    searchRoomId === ""
+      ? setNotification(
+          { type: "error", message: "Please enter room code to continue" },
+          setTimeout(() => {
+            setNotification(null);
+          }, NOTIF_TIMEOUT)
+        )
+      : socket.emit("searchRoom", searchRoomId);
   };
   const newGame = () => {
-    socket.emit("newGame", name, userId);
+    name === ""
+      ? setNotification(
+          { type: "error", message: "Please enter your name to continue" },
+          setTimeout(() => {
+            setNotification(null);
+          }, NOTIF_TIMEOUT)
+        )
+      : socket.emit("newGame", name, userId);
   };
   const addToGame = () => {
     socket.emit("addToGame", currentRoomId, name, userId);
@@ -173,7 +191,7 @@ function App() {
     socket.emit("recordScore", currentRoomId, userId);
   };
   const playAgain = () => {
-    socket.emit("playAgain", currentRoomId);
+    socket.emit("playAgain", currentRoomId, gameData[0].token);
   };
   const leaveRoom = () => {
     setMode(WELCOME);
@@ -195,9 +213,9 @@ function App() {
               Play online trivia with your friends! Create or join an existing
               room and compete with your friends wherever they are!
             </p>
-            <Button text="New Game" callback={() => setMode(NEW)}></Button>
+            <Button text="New Room" callback={() => setMode(NEW)}></Button>
             <br />
-            <Button text="Join Game" callback={() => setMode(JOIN)}></Button>
+            <Button text="Join Room" callback={() => setMode(JOIN)}></Button>
           </>
         )}
         {mode === NEW && (
@@ -208,6 +226,7 @@ function App() {
             ></TextInput>
             <br />
             <Button text="Create room" callback={newGame}></Button>
+            <Link onClick={back}>Go Back</Link>
           </>
         )}
         {mode === JOIN && (
@@ -218,14 +237,7 @@ function App() {
             ></TextInput>
             <br />
             <Button text="Find room" callback={getRoom}></Button>
-            <br />
-            <Link
-              onClick={() => {
-                setMode(WELCOME);
-              }}
-            >
-              Go Back
-            </Link>
+            <Link onClick={back}>Go Back</Link>
           </>
         )}
         {mode === NAME && (
