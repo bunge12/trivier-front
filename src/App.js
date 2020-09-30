@@ -182,7 +182,14 @@ function App() {
       : socket.emit("newGame", name, userId);
   };
   const addToGame = () => {
-    socket.emit("addToGame", currentRoomId, name, userId);
+    name === ""
+      ? setNotification(
+          { type: "error", message: "Please enter your name to continue" },
+          setTimeout(() => {
+            setNotification(null);
+          }, NOTIF_TIMEOUT)
+        )
+      : socket.emit("addToGame", currentRoomId, name, userId);
   };
   const startGame = () => {
     socket.emit("startGame", currentRoomId);
@@ -191,6 +198,7 @@ function App() {
     socket.emit("recordScore", currentRoomId, userId);
   };
   const playAgain = () => {
+    setNumber(1);
     socket.emit("playAgain", currentRoomId, gameData[0].token);
   };
   const leaveRoom = () => {
