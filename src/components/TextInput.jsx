@@ -17,7 +17,7 @@ const Field = styled.input`
 `;
 
 export default function TextInput(props) {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(props.value || "");
   const saveValue = (event) => {
     setValue(event.target.value);
     props.callback(event.target.value);

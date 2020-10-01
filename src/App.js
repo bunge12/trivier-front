@@ -11,15 +11,17 @@ import Notification from "./components/Notification";
 import quiz from "./images/quiz.svg";
 import ReactGA from "react-ga";
 import generateId from "./helper/generateId";
-
-const WELCOME = "WELCOME"; // Welcome Screen
-const NEW = "NEW"; // Create new Room
-const JOIN = "JOIN"; // Join Existing Room
-const NAME = "NAME"; // Add name to existing room
-const WAITING = "WAITING"; // Waiting Room
-const PLAY = "PLAY"; // Questions
-const SCOREBOARD = "SCOREBOARD"; // Score Board
-const NOTIF_TIMEOUT = 4000; // in ms
+import usePersistentState from "./hooks/usePersistentState";
+import {
+  WELCOME,
+  NEW,
+  JOIN,
+  NAME,
+  WAITING,
+  NOTIF_TIMEOUT,
+  PLAY,
+  SCOREBOARD,
+} from "./helpers/modes";
 
 const Title = styled.div`
   font-family: "Luckiest Guy", cursive;
@@ -58,7 +60,7 @@ const Text = styled.div`
 function App() {
   const [searchRoomId, setSearchRoomId] = useState("");
   const [currentRoomId, setcurrentRoomId] = useState(null);
-  const [name, setName] = useState("");
+  const [name, setName] = usePersistentState("name", "");
   const [userId, setUserId] = useState(null);
   const [mode, setMode] = useState(WELCOME);
   const [admin, setAdmin] = useState(false);
@@ -68,11 +70,13 @@ function App() {
   const [notification, setNotification] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState({});
 
-  // Socket.io listeners
   useEffect(() => {
+    // Google Analytics
     ReactGA.initialize("UA-179116325-1");
     ReactGA.pageview(window.location.pathname + window.location.search);
     setUserId(generateId(6));
+
+    // Room Found
     socket.on("roomFound", (roomId) => {
       setNotification(
         { type: "success", message: `Joined room ${roomId}` },
@@ -83,6 +87,8 @@ function App() {
       setcurrentRoomId(roomId);
       setMode(NAME);
     });
+
+    // Room Not Found
     socket.on("roomNotFound", () => {
       setNotification(
         { type: "error", message: "Room not found!" },
@@ -91,6 +97,8 @@ function App() {
         }, NOTIF_TIMEOUT)
       );
     });
+
+    // Waiting Room
     socket.on("waitingToStart", (data, questions, admin) => {
       setGameData(data);
       setcurrentRoomId(data[0].room);
@@ -99,20 +107,30 @@ function App() {
       admin && setAdmin(true);
       setCurrentQuestion(data[0].questions[0]);
     });
+
+    // Update Game Data when someone leaves
     socket.on("someoneLeft", (data) => {
       setGameData(data);
     });
+
+    // Start the game
     socket.on("gameStarted", () => {
       setMode(PLAY);
     });
+
+    // Proceed to next question
     socket.on("nextQuestion", (data, count) => {
       setNumber(count + 2);
       setCurrentQuestion(data[0].questions[count + 1]);
     });
+
+    // Game Finished
     socket.on("gameOver", (data) => {
       setGameData(data);
       setMode(SCOREBOARD);
     });
+
+    // Game ended since admin left
     socket.on("gameEnded", () => {
       setNotification(
         { type: "error", message: "Game ended since the admin left!" },
@@ -124,9 +142,11 @@ function App() {
       setcurrentRoomId(null);
       setGameData(null);
     });
-    socket.on("serverError", () => {
+
+    // Server error
+    socket.on("serverError", (message) => {
       setNotification(
-        { type: "error", message: "Server Error" },
+        { type: "error", message: `Server Error: ${message}` },
         setTimeout(() => {
           setNotification(null);
         }, NOTIF_TIMEOUT)
@@ -191,8 +211,11 @@ function App() {
     socket.emit("playAgain", currentRoomId, gameData[0].token);
   };
   const leaveRoom = () => {
-    setMode(WELCOME);
     setcurrentRoomId(null);
+    setCurrentQuestion({});
+    setGameData(null);
+    setNumber(1);
+    setMode(WELCOME);
     socket.emit("leaveRoom", currentRoomId, userId, admin);
   };
 
@@ -220,6 +243,7 @@ function App() {
             <TextInput
               placeholder="Enter Your Name"
               callback={saveName}
+              value={name}
             ></TextInput>
             <br />
             <Button text="Create room" callback={newGame}></Button>
@@ -255,12 +279,14 @@ function App() {
             {admin && gameData[0].players.length === 1 && (
               <Text>Wait for other players to join, or</Text>
             )}
-            {admin && (
+            {admin ? (
               <>
                 <Button text="Start Game" callback={startGame}></Button>
                 <br />
                 <Link onClick={leaveRoom}>End Game</Link>
               </>
+            ) : (
+              <Link onClick={leaveRoom}>Leave Room</Link>
             )}
           </>
         )}
