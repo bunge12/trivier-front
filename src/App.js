@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
 import styled from "styled-components";
 import { socket } from "./service/socket";
 import TextInput from "./components/TextInput";

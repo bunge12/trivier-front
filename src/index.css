@@ -30,3 +30,33 @@ code {
   );
   flex-direction: column;
 }
+
+.App {
+  text-align: center;
+  width: 70%;
+  margin: 0px auto;
+  background-color: white;
+  padding: 1.5em;
+  border-radius: 1em;
+  color: #2f2f41;
+}
+
+@media only screen and (max-width: 600px) {
+  .App {
+    width: 85%;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .App {
+    width: 45%;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .App {
+    width: 35%;
+  }
+}
