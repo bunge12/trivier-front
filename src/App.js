@@ -10,6 +10,7 @@ import ScoreBoard from "./components/ScoreBoard";
 import Notification from "./components/Notification";
 import quiz from "./images/quiz.svg";
 import ReactGA from "react-ga";
+import generateId from "./helper/generateId";
 
 const WELCOME = "WELCOME"; // Welcome Screen
 const NEW = "NEW"; // Create new Room
@@ -53,17 +54,6 @@ const Footer = styled.footer`
 const Text = styled.div`
   font-size: small;
 `;
-
-// Helper Functions
-const generateId = (length) => {
-  var result = "";
-  var characters = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789";
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
 
 function App() {
   const [searchRoomId, setSearchRoomId] = useState("");
