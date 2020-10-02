@@ -6,6 +6,9 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { TelegramIcon, ViberIcon, WhatsappIcon } from "react-share";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { MobileView } from "react-device-detect";
+
 import TextSmall from "./TextSmall";
 
 const List = styled.ul`
@@ -26,14 +29,25 @@ const Item = styled.li`
   width: 50%;
   display: inline-block;
 `;
-const Container = styled.div``;
+const Container = styled.div`
+  text-align: center;
+`;
 const Row = styled.div`
   display: flex;
   justify-content: space-evenly;
   width: 50%;
   margin: 0px auto;
   margin-bottom: 2vh;
-  margin-top: 2vh;
+  margin-top: 0.5vh;
+`;
+const Button = styled.button`
+  background: none;
+  color: rgb(29, 54, 92);
+  border: 1px solid rgb(29, 54, 92);
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  margin: 0.25rem;
+  text-align: center;
 `;
 
 export default function WaitingRoom(props) {
@@ -46,17 +60,22 @@ export default function WaitingRoom(props) {
       <TextSmall text="Waiting room:"></TextSmall>
       <List>{listItems}</List>
       <TextSmall text="Invite your friends:"></TextSmall>
-      <Row>
-        <TelegramShareButton url={`https://trivier.co?room=${props.room}`}>
-          <TelegramIcon size={32} round={true} />
-        </TelegramShareButton>
-        <ViberShareButton url={`https://trivier.co?room=${props.room}`}>
-          <ViberIcon size={32} round={true} />
-        </ViberShareButton>
-        <WhatsappShareButton url={`https://trivier.co?room=${props.room}`}>
-          <WhatsappIcon size={32} round={true} />
-        </WhatsappShareButton>
-      </Row>
+      <CopyToClipboard text={`https://trivier.co?room=${props.room}`}>
+        <Button>Copy Link</Button>
+      </CopyToClipboard>
+      <MobileView>
+        <Row>
+          <TelegramShareButton url={`https://trivier.co?room=${props.room}`}>
+            <TelegramIcon size={32} round={true} />
+          </TelegramShareButton>
+          <ViberShareButton url={`https://trivier.co?room=${props.room}`}>
+            <ViberIcon size={32} round={true} />
+          </ViberShareButton>
+          <WhatsappShareButton url={`https://trivier.co?room=${props.room}`}>
+            <WhatsappIcon size={32} round={true} />
+          </WhatsappShareButton>
+        </Row>
+      </MobileView>
     </Container>
   );
 }

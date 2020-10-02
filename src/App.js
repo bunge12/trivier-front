@@ -147,9 +147,9 @@ function App() {
     });
 
     // Server error
-    socket.on("serverError", (message) => {
+    socket.on("gameError", (message) => {
       setNotification(
-        { type: "error", message: `Server Error: ${message}` },
+        { type: "error", message: `Error: ${message}` },
         setTimeout(() => {
           setNotification(null);
         }, NOTIF_TIMEOUT)
@@ -175,7 +175,7 @@ function App() {
   useEffect(() => {
     const value = queryString.parse(window.location.search);
     const room = value.room;
-    if (room !== "") {
+    if (room) {
       socket.emit("searchRoom", room);
     }
   }, []);
@@ -280,6 +280,7 @@ function App() {
             ></TextInput>
             <br />
             <Button text="Join room" callback={addToGame}></Button>
+            <Link onClick={leaveRoom}>Leave Room</Link>
           </>
         )}
         {mode === WAITING && (
