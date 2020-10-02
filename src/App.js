@@ -277,6 +277,7 @@ function App() {
             <TextInput
               placeholder="Enter Your Name"
               callback={saveName}
+              value={name}
             ></TextInput>
             <br />
             <Button text="Join room" callback={addToGame}></Button>
