@@ -12,6 +12,8 @@ import quiz from "./images/quiz.svg";
 import ReactGA from "react-ga";
 import generateId from "./helper/generateId";
 import usePersistentState from "./hooks/usePersistentState";
+import queryString from "query-string";
+
 import {
   WELCOME,
   NEW,
@@ -90,6 +92,7 @@ function App() {
 
     // Room Not Found
     socket.on("roomNotFound", () => {
+      window.history.replaceState({}, document.title, "/");
       setNotification(
         { type: "error", message: "Room not found!" },
         setTimeout(() => {
@@ -168,6 +171,14 @@ function App() {
   const back = () => {
     setMode(WELCOME);
   };
+
+  useEffect(() => {
+    const value = queryString.parse(window.location.search);
+    const room = value.room;
+    if (room !== "") {
+      socket.emit("searchRoom", room);
+    }
+  }, []);
 
   // Socket Actions
   const getRoom = () => {
@@ -273,9 +284,7 @@ function App() {
         )}
         {mode === WAITING && (
           <>
-            <br />
-            <Text>Waiting room:</Text>
-            <WaitingRoom players={gameData[0].players} />
+            <WaitingRoom players={gameData[0].players} room={currentRoomId} />
             {admin && gameData[0].players.length === 1 && (
               <Text>Wait for other players to join, or</Text>
             )}

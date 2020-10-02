@@ -29,6 +29,7 @@ export default function TextInput(props) {
       placeholder={props.placeholder}
       value={value}
       onChange={saveValue}
+      autoFocus={true}
     ></Field>
   );
 }

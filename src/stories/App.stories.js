@@ -69,7 +69,7 @@ storiesOf("App", module)
   .add("Join Room Button", () => (
     <Button text="Join Room" callback={action("clicked")} />
   ))
-  .add("Waiting Room", () => <WaitingRoom players={players} />)
+  .add("Waiting Room", () => <WaitingRoom players={players} room={"ABCD"} />)
   .add("Scoreboard", () => <ScoreBoard players={players} number={"10"} />)
   .add("Info Bar", () => <GameInfo name={"Artur"} room={"ABCD"} />)
   .add("Multiple Choice Question", () => (
