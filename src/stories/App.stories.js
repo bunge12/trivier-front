@@ -189,4 +189,6 @@ storiesOf("App", module)
   .add("Success message", () => (
     <Notification type={"success"} text={"Success message"}></Notification>
   ))
-  .add("Category Selection", () => <Category data={categories}></Category>);
+  .add("Category Selection", () => (
+    <Category data={categories} callback={"Clicked"}></Category>
+  ));
