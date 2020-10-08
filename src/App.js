@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { socket } from "./service/socket";
+import axios from "axios";
 import TextInput from "./components/TextInput";
 import Button from "./components/Button";
 import WaitingRoom from "./components/WaitingRoom";
@@ -8,14 +9,16 @@ import GameInfo from "./components/GameInfo";
 import Question from "./components/Question";
 import ScoreBoard from "./components/ScoreBoard";
 import Notification from "./components/Notification";
+import Category from "./components/Category";
 import quiz from "./images/quiz.svg";
 import ReactGA from "react-ga";
-import generateId from "./helper/generateId";
+import generateId from "./helpers/generateId";
 import usePersistentState from "./hooks/usePersistentState";
 import queryString from "query-string";
 
 import {
   WELCOME,
+  SETTINGS,
   NEW,
   JOIN,
   NAME,
@@ -71,6 +74,8 @@ function App() {
   const [number, setNumber] = useState(1);
   const [notification, setNotification] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState({});
+  const [settings, setSettings] = useState({ category: 9, difficulty: "any" });
+  const [categories, setCategories] = useState({});
 
   useEffect(() => {
     // Google Analytics
@@ -171,8 +176,19 @@ function App() {
   const back = () => {
     setMode(WELCOME);
   };
+  const saveSettings = (setting, value) => {
+    if (setting === "category") {
+      setSettings({ ...settings, category: value });
+    }
+    if (setting === "difficulty") {
+      setSettings({ ...settings, difficulty: value });
+    }
+  };
 
   useEffect(() => {
+    axios
+      .get("https://opentdb.com/api_category.php")
+      .then((data) => setCategories(data.data));
     const value = queryString.parse(window.location.search);
     const room = value.room;
     if (room) {
@@ -244,9 +260,16 @@ function App() {
               Play online trivia with your friends! Create or join an existing
               room and compete with your friends wherever they are!
             </p>
-            <Button text="New Room" callback={() => setMode(NEW)}></Button>
+            <Button text="New Room" callback={() => setMode(SETTINGS)}></Button>
             <br />
             <Button text="Join Room" callback={() => setMode(JOIN)}></Button>
+          </>
+        )}
+        {mode === SETTINGS && (
+          <>
+            <Category data={categories} callback={saveSettings} />
+            <Button text="Continue" callback={() => setMode(NEW)}></Button>
+            <Link onClick={back}>Go Back</Link>
           </>
         )}
         {mode === NEW && (

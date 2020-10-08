@@ -1,5 +1,6 @@
 export const WELCOME = "WELCOME"; // Welcome Screen
 export const NEW = "NEW"; // Create new Room
+export const SETTINGS = "SETTINGS"; // Create new Room
 export const JOIN = "JOIN"; // Create new Room
 export const NAME = "NAME"; // Add name to existing room
 export const WAITING = "WAITING"; // Waiting Room
