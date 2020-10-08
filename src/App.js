@@ -215,7 +215,7 @@ function App() {
             setNotification(null);
           }, NOTIF_TIMEOUT)
         )
-      : socket.emit("newGame", name, userId);
+      : socket.emit("newGame", name, userId, settings);
   };
   const addToGame = () => {
     name === ""
@@ -235,7 +235,7 @@ function App() {
   };
   const playAgain = () => {
     setNumber(1);
-    socket.emit("playAgain", currentRoomId, gameData[0].token);
+    socket.emit("playAgain", currentRoomId, settings, gameData[0].token);
   };
   const leaveRoom = () => {
     setcurrentRoomId(null);
