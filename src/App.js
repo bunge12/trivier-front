@@ -138,10 +138,10 @@ function App() {
       setMode(SCOREBOARD);
     });
 
-    // Game ended since admin left
-    socket.on("gameEnded", () => {
+    // Game Ended / Server error
+    socket.on("gameEnded", (message) => {
       setNotification(
-        { type: "error", message: "Game ended since the admin left!" },
+        { type: "error", message: message },
         setTimeout(() => {
           setNotification(null);
         }, NOTIF_TIMEOUT)
@@ -149,20 +149,11 @@ function App() {
       setMode(WELCOME);
       setcurrentRoomId(null);
       setGameData(null);
+      setAdmin(false);
+      setNumberOfQuestions(null);
+      setNumber(1);
     });
 
-    // Server error
-    socket.on("gameError", (message) => {
-      setNotification(
-        { type: "error", message: `Error: ${message}` },
-        setTimeout(() => {
-          setNotification(null);
-        }, NOTIF_TIMEOUT)
-      );
-      setMode(WELCOME);
-      setcurrentRoomId(null);
-      setGameData(null);
-    });
     // eslint-disable-next-line
   }, []);
 
