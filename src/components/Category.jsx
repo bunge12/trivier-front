@@ -4,10 +4,24 @@ import TextSmall from "./TextSmall";
 
 const Select = styled.select`
   font-size: 16px;
-  margin-bottom: 3vh;
+  margin-bottom: 2rem;
+  background: none;
+  padding: 0.1em;
+  border: 1px solid #0075c7;
+  border-radius: 1em;
+  margin-top: 0.5vh;
+  margin-bottom: 0.5vh;
+  color: #0075c7;
+  @media only screen and (min-width: 600px) {
+    padding: 1em;
+  }
+  :focus {
+    outline: none;
+  }
 `;
 const Container = styled.div`
   text-align: center;
+  margin-bottom: 1rem;
 `;
 const difficulties = [
   { text: "Any Difficulty", value: "any" },
@@ -27,12 +41,22 @@ export default function Category(props) {
       {each.text}
     </option>
   ));
+  const save = (event) => {
+    props.callback(event.target.name, event.target.value);
+  };
   return (
     <Container>
       <TextSmall text="Select a category" />
-      <Select>{options}</Select>
+      <Select name="category" onChange={save}>
+        {options}
+      </Select>
+      <br />
+      <br />
+
       <TextSmall text="Select difficulty" />
-      <Select>{levels}</Select>
+      <Select name="difficulty" onChange={save}>
+        {levels}
+      </Select>
     </Container>
   );
 }
