@@ -221,8 +221,8 @@ function App() {
   const startGame = () => {
     socket.emit("startGame", currentRoomId);
   };
-  const recordScore = () => {
-    socket.emit("recordScore", currentRoomId, userId);
+  const recordScore = (value) => {
+    socket.emit("recordScore", currentRoomId, userId, value);
   };
   const playAgain = () => {
     setNumber(1);

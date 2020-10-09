@@ -57,9 +57,10 @@ export default function Question(props) {
 
   const checkWinner = (answer) => {
     if (answer === correct_answer) {
-      props.score();
+      props.score(true);
       setDisabled(true);
     } else {
+      props.score(false);
       setShowCorrect(answers.indexOf(correct_answer));
       setDisabled(true);
     }
