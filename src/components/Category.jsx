@@ -6,7 +6,8 @@ const Select = styled.select`
   font-size: 16px;
   margin-bottom: 2rem;
   background: none;
-  padding: 0.1em;
+  text-align-last: center;
+  padding: 0.2em;
   border: 1px solid #0075c7;
   border-radius: 1em;
   margin-top: 0.5vh;

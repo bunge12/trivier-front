@@ -108,6 +108,7 @@ function App() {
 
     // Waiting Room
     socket.on("waitingToStart", (data, questions, admin) => {
+      setNotification(null);
       setGameData(data);
       setcurrentRoomId(data[0].room);
       setMode(WAITING);
@@ -199,14 +200,22 @@ function App() {
       : socket.emit("searchRoom", searchRoomId);
   };
   const newGame = () => {
-    name === ""
-      ? setNotification(
-          { type: "error", message: "Please enter your name to continue" },
-          setTimeout(() => {
-            setNotification(null);
-          }, NOTIF_TIMEOUT)
-        )
-      : socket.emit("newGame", name, userId, settings);
+    if (name === "") {
+      setNotification(
+        { type: "error", message: "Please enter your name to continue" },
+        setTimeout(() => {
+          setNotification(null);
+        }, NOTIF_TIMEOUT)
+      );
+    } else {
+      setNotification(
+        { type: "success", message: "Loading room details, please wait" },
+        setTimeout(() => {
+          setNotification(null);
+        }, NOTIF_TIMEOUT)
+      );
+      socket.emit("newGame", name, userId, settings);
+    }
   };
   const addToGame = () => {
     name === ""
@@ -221,8 +230,8 @@ function App() {
   const startGame = () => {
     socket.emit("startGame", currentRoomId);
   };
-  const recordScore = () => {
-    socket.emit("recordScore", currentRoomId, userId);
+  const recordScore = (value) => {
+    socket.emit("recordScore", currentRoomId, userId, value);
   };
   const playAgain = () => {
     setNumber(1);
