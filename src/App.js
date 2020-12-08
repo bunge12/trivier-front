@@ -128,9 +128,9 @@ function App() {
     });
 
     // Proceed to next question
-    socket.on("nextQuestion", (data, count) => {
-      setNumber(count + 2);
-      setCurrentQuestion(data[0].questions[count + 1]);
+    socket.on("nextQuestion", (data, num_ques, count) => {
+      setNumber(count + 1);
+      if (count !== num_ques) setCurrentQuestion(data[0].questions[count]);
     });
 
     // Game Finished
@@ -346,7 +346,11 @@ function App() {
             <br />
             {admin && <Button text="Play Again" callback={playAgain}></Button>}
             <br />
-            <Link onClick={leaveRoom}>End Game</Link>
+            {admin ? (
+              <Link onClick={leaveRoom}>End Game</Link>
+            ) : (
+              <Link onClick={leaveRoom}>Leave Room</Link>
+            )}
           </>
         )}
         {notification && (
