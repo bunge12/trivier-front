@@ -64,7 +64,7 @@ const Text = styled.div`
 
 function App() {
   const [searchRoomId, setSearchRoomId] = useState("");
-  const [currentRoomId, setcurrentRoomId] = useState(null);
+  const [currentRoomId, setCurrentRoomId] = useState(null);
   const [name, setName] = usePersistentState("name", "");
   const [userId, setUserId] = useState(null);
   const [mode, setMode] = useState(WELCOME);
@@ -91,7 +91,8 @@ function App() {
           setNotification(null);
         }, NOTIF_TIMEOUT)
       );
-      setcurrentRoomId(roomId);
+      setCurrentRoomId(roomId);
+      setAdmin(false);
       setMode(NAME);
     });
 
@@ -108,9 +109,10 @@ function App() {
 
     // Waiting Room
     socket.on("waitingToStart", (data, questions, admin) => {
+      setNumber(1);
       setNotification(null);
       setGameData(data);
-      setcurrentRoomId(data[0].room);
+      setCurrentRoomId(data[0].room);
       setMode(WAITING);
       setNumberOfQuestions(questions);
       admin && setAdmin(true);
@@ -148,7 +150,7 @@ function App() {
         }, NOTIF_TIMEOUT)
       );
       setMode(WELCOME);
-      setcurrentRoomId(null);
+      setCurrentRoomId(null);
       setGameData(null);
       setAdmin(false);
       setNumberOfQuestions(null);
@@ -238,7 +240,7 @@ function App() {
     socket.emit("playAgain", currentRoomId, settings, gameData[0].token);
   };
   const leaveRoom = () => {
-    setcurrentRoomId(null);
+    setCurrentRoomId(null);
     setCurrentQuestion({});
     setGameData(null);
     setNumber(1);
