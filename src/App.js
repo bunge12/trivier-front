@@ -15,6 +15,14 @@ import ReactGA from "react-ga";
 import generateId from "./helpers/generateId";
 import usePersistentState from "./hooks/usePersistentState";
 import queryString from "query-string";
+import firebase from "firebase/app";
+import "firebase/auth";
+import {
+  FirebaseAuthProvider,
+  FirebaseAuthConsumer,
+  IfFirebaseAuthed,
+  IfFirebaseAuthedAnd,
+} from "@react-firebase/auth";
 
 import {
   WELCOME,
@@ -250,6 +258,34 @@ function App() {
 
   return (
     <>
+      <button
+        onClick={() => {
+          const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+          firebase.auth().signInWithPopup(googleAuthProvider);
+        }}
+      >
+        Sign In with Google
+      </button>
+      <IfFirebaseAuthedAnd
+        filter={({ providerId }) => providerId !== "anonymous"}
+      >
+        {({ providerId, user }) => {
+          console.log(user);
+          return (
+            <div>
+              You are authenticated with {providerId}, user {user.displayName}
+              <img src={user.photoURL}></img>
+            </div>
+          );
+        }}
+      </IfFirebaseAuthedAnd>
+      <button
+        onClick={() => {
+          firebase.auth().signOut();
+        }}
+      >
+        Sign Out
+      </button>
       <div className="App">
         <Title>Trivier</Title>
         {currentRoomId && (
