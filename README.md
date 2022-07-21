@@ -1,6 +1,7 @@
 # Trivier
 
 Trivier is an online trivia game that you can play with your friends, wherever they are! Create a room, invite your friends and see who can get the most questions right!
+![179873963-8ca447b5-92ec-418c-84a2-d6ad766a8fee](https://user-images.githubusercontent.com/54365622/180106483-00cdae0f-9213-45fc-b808-f97581e242cf.png)
 
 ## Final Product
 
