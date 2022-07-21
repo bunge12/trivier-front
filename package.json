@@ -6,11 +6,10 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "axios": "^0.20.0",
-    "query-string": "^6.13.4",
+    "axios": "0.27.2",
+    "query-string": "7.1.1",
     "react": "^18.2.0",
     "react-copy-to-clipboard": "^5.0.2",
-    "react-device-detect": "^1.13.1",
     "react-dom": "^18.2.0",
     "react-ga": "^3.1.2",
     "react-scripts": "5.0.1",
@@ -49,6 +48,6 @@
     "@storybook/node-logger": "^6.0.21",
     "@storybook/preset-create-react-app": "^3.1.4",
     "@storybook/react": "^6.0.21",
-    "react-is": "^16.13.1"
+    "react-is": "18.2.0"
   }
 }
